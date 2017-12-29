@@ -3,6 +3,7 @@ package me.fumba.weatherstation.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,17 @@ public class StationDaoImp implements StationDao {
 		Station result = null;
 		try {
 			result = namedParameterJdbcTemplate.queryForObject(sql, params, new StationMapper());
+		} catch (Exception e) {
+		}
+		return result;
+	}
+
+	@Override
+	public List<Station> findAllStations() {
+		String sql = "SELECT * FROM stations";
+		List<Station> result = null;
+		try {
+			result = namedParameterJdbcTemplate.query(sql, new StationMapper());
 		} catch (Exception e) {
 		}
 		return result;

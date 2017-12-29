@@ -1,5 +1,7 @@
 package me.fumba.weatherstation.api.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +26,34 @@ public class WeatherStationController {
 
 	private static final Logger logger = LoggerFactory.getLogger(WeatherStationController.class);
 
+	/**
+	 * Get a station using its id
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(value = "/station/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Station> getStation(@PathVariable("id") long id) {
 		logger.info("Station id : " + id);
 		Station station = stationDao.findById(id);
 		if (station == null) {
-			System.out.println("Stattion with id " + id + " not found");
+			System.out.println("Station with id " + id + " not found");
 			return new ResponseEntity<Station>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Station>(station, HttpStatus.OK);
+	}
+
+	/**
+	 * Retrieve all stations
+	 * 
+	 */
+	@RequestMapping(value = "/stations", method = RequestMethod.GET)
+	public ResponseEntity<List<Station>> listAllUsers() {
+		List<Station> stations = stationDao.findAllStations();
+		if (stations.isEmpty()) {
+			return new ResponseEntity<List<Station>>(HttpStatus.NO_CONTENT); // HttpStatus.NOT_FOUND
+		}
+		return new ResponseEntity<List<Station>>(stations, HttpStatus.OK);
 	}
 
 }
