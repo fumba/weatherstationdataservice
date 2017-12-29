@@ -69,8 +69,10 @@ public class StationDaoImp implements StationDao {
 
 	@Override
 	public void deleteStation(long id) {
-		// TODO Auto-generated method stub
-
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		String sql = "delete from stations where id = :id";
+		namedParameterJdbcTemplate.update(sql, params);
 	}
 
 	/**

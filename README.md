@@ -1,20 +1,24 @@
 # weatherstationdataservice
 
 
-NON-EXISTING STATION - $ curl http://localhost:8080/station/5
+1. NON-EXISTING STATION - $ curl http://localhost:8080/station/5
 
 
-EXISTING STATION - $ curl http://localhost:8080/station/1
+2. EXISTING STATION - $ curl http://localhost:8080/station/1
 
 
-RETRIEVE ALL STATTIONS - $ curl http://localhost:8080/stations
+3. RETRIEVE ALL STATTIONS - $ curl http://localhost:8080/stations
 
 
-ADDING A NEW STATION - $ curl -H "Content-Type: application/json" -X POST -d '{"id":"4","name":"NEW #4FOUR","location":"444 New Entry PA 17325"}' http://localhost:8080/station
+4. ADDING A NEW STATION - $ curl -H "Content-Type: application/json" -X POST -d '{"id":"4","name":"NEW #4FOUR","location":"444 New Entry PA 17325"}' http://localhost:8080/station
 
 
-UPDATING AN EXISTING STATION - $ curl -H "Content-Type: application/json" -X PUT -d '{"id":"1","name":"UPDATED#4FOUR","location":"Updated-444 New Entry PA 17325"}' http://localhost:8080/station/1
+5. UPDATING AN EXISTING STATION - $ curl -H "Content-Type: application/json" -X PUT -d '{"id":"1","name":"UPDATED#4FOUR","location":"Updated-444 New Entry PA 17325"}' http://localhost:8080/station/1
 
 Assumption : the id provided in the JSON body is ignored when retrieving and updating the station. 
+
+
+6. DELETING A STATION - $ curl -X DELETE http://localhost:8080/station/1
+
 
 
