@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import me.fumba.weatherstation.api.controller.WeatherStationController;
+import me.fumba.weatherstation.model.Sensor;
 import me.fumba.weatherstation.model.Station;
 
 @Repository
@@ -22,11 +23,19 @@ public class StationDaoImp implements StationDao {
 	private static final String STATION_LOCATION_STRING = "location";
 	private static final String STATION_NAME_STRING = "name";
 	private static final String STATION_ID_STRING = "id";
+
+	private static final String SENSOR_ID_STRING = "id";
+	private static final String SENSOR_NAME_STRING = "name";
+	private static final String SENSOR_TYPE_STRING = "type";
+	private static final String SENSOR_STATION_ID_STRING = "station_id";
+
 	private static final String STATIONS_DELETE_BY_ID_QUERY = "delete from stations where id = :id";
 	private static final String STATIONS_UPDATE_BY_ID_QUERY = "UPDATE stations set name = :name, location = :location where id = :id";
 	private static final String STATIONS_INSERT_QUERY = "INSERT into stations (id, name, location) values (:id, :name, :location)";
 	private static final String STATIONS_SELECT_ALL_QUERY = "SELECT * FROM stations";
 	private static final String STATIONS_SELECT_BY_ID_QUERY = "SELECT * FROM stations WHERE id=:id";
+	private static final String SENSORS_SELECT_ALL_QUERY = "SELECT * FROM sensors WHERE station_id=:id";
+
 	NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	private static final Logger logger = LoggerFactory.getLogger(StationDaoImp.class);
@@ -97,6 +106,19 @@ public class StationDaoImp implements StationDao {
 		return false;
 	}
 
+	@Override
+	public List<Sensor> findAllStationSensors(long id) {
+		List<Sensor> result = null;
+		try {
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put(STATION_ID_STRING, id);
+			result = namedParameterJdbcTemplate.query(SENSORS_SELECT_ALL_QUERY, params, new SensorMapper());
+		} catch (Exception e) {
+			logger.debug(e.toString());
+		}
+		return result;
+	}
+
 	private static final class StationMapper implements RowMapper<Station> {
 		public Station mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Station station = new Station();
@@ -104,6 +126,17 @@ public class StationDaoImp implements StationDao {
 			station.setName(rs.getString(STATION_NAME_STRING));
 			station.setLocation(rs.getString(STATION_LOCATION_STRING));
 			return station;
+		}
+	}
+
+	private static final class SensorMapper implements RowMapper<Sensor> {
+		public Sensor mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Sensor sensor = new Sensor();
+			sensor.setId(rs.getLong(SENSOR_ID_STRING));
+			sensor.setName(rs.getString(SENSOR_NAME_STRING));
+			sensor.setType(rs.getString(SENSOR_TYPE_STRING));
+			sensor.setStationId(rs.getLong(SENSOR_STATION_ID_STRING));
+			return sensor;
 		}
 	}
 

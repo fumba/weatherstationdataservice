@@ -24,5 +24,7 @@ Assumption : the id provided in the JSON body is ignored when retrieving and upd
 
 6. DELETING A STATION - $ curl -X DELETE http://localhost:8080/station/1
 
+7. GETTING STATION SENSORS - $ curl http://localhost:8080/station/1/sensors
+
 
 

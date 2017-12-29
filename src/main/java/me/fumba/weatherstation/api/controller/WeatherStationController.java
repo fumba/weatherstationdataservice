@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import me.fumba.weatherstation.dao.StationDao;
+import me.fumba.weatherstation.model.Sensor;
 import me.fumba.weatherstation.model.Station;
 
 @ComponentScan(basePackages = "me.fumba")
@@ -94,6 +95,24 @@ public class WeatherStationController {
 		currentStation.setLocation(station.getLocation());
 		stationDao.updateStation(currentStation);
 		return new ResponseEntity<Station>(currentStation, HttpStatus.OK);
+	}
+
+	/**
+	 * Retrieve all sensors related to the station
+	 * 
+	 */
+	@RequestMapping(value = "/station/{id}/sensors", method = RequestMethod.GET)
+	public ResponseEntity<List<Sensor>> findAllStationSensors(@PathVariable("id") long id) {
+		Station currentStation = stationDao.findById(id);
+		if (currentStation == null) {
+			logger.info("Station with id " + id + " not found");
+			return new ResponseEntity<List<Sensor>>(HttpStatus.NOT_FOUND);
+		}
+		List<Sensor> sensors = stationDao.findAllStationSensors(id);
+		if (sensors == null || sensors.isEmpty()) {
+			return new ResponseEntity<List<Sensor>>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<List<Sensor>>(sensors, HttpStatus.OK);
 	}
 
 	/**
