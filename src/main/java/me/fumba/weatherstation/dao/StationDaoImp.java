@@ -6,17 +6,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import me.fumba.weatherstation.api.controller.WeatherStationController;
 import me.fumba.weatherstation.model.Station;
 
 @Repository
 public class StationDaoImp implements StationDao {
 
+	private static final String STATION_LOCATION_STRING = "location";
+	private static final String STATION_NAME_STRING = "name";
+	private static final String STATION_ID_STRING = "id";
+	private static final String STATIONS_DELETE_BY_ID_QUERY = "delete from stations where id = :id";
+	private static final String STATIONS_UPDATE_BY_ID_QUERY = "UPDATE stations set name = :name, location = :location where id = :id";
+	private static final String STATIONS_INSERT_QUERY = "INSERT into stations (id, name, location) values (:id, :name, :location)";
+	private static final String STATIONS_SELECT_ALL_QUERY = "SELECT * FROM stations";
+	private static final String STATIONS_SELECT_BY_ID_QUERY = "SELECT * FROM stations WHERE id=:id";
 	NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+	private static final Logger logger = LoggerFactory.getLogger(StationDaoImp.class);
 
 	@Autowired
 	public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -26,23 +39,24 @@ public class StationDaoImp implements StationDao {
 	@Override
 	public Station findById(long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", id);
-		String sql = "SELECT * FROM stations WHERE id=:id";
+		params.put(STATION_ID_STRING, id);
 		Station result = null;
 		try {
-			result = namedParameterJdbcTemplate.queryForObject(sql, params, new StationMapper());
+			result = namedParameterJdbcTemplate.queryForObject(STATIONS_SELECT_BY_ID_QUERY, params,
+					new StationMapper());
 		} catch (Exception e) {
+			logger.debug(e.toString());
 		}
 		return result;
 	}
 
 	@Override
 	public List<Station> findAllStations() {
-		String sql = "SELECT * FROM stations";
 		List<Station> result = null;
 		try {
-			result = namedParameterJdbcTemplate.query(sql, new StationMapper());
+			result = namedParameterJdbcTemplate.query(STATIONS_SELECT_ALL_QUERY, new StationMapper());
 		} catch (Exception e) {
+			logger.debug(e.toString());
 		}
 		return result;
 	}
@@ -50,29 +64,26 @@ public class StationDaoImp implements StationDao {
 	@Override
 	public void saveStation(Station station) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", station.getId());
-		params.put("name", station.getName());
-		params.put("location", station.getLocation());
-		String sql = "INSERT into stations (id, name, location) values (:id, :name, :location)";
-		namedParameterJdbcTemplate.update(sql, params);
+		params.put(STATION_ID_STRING, station.getId());
+		params.put(STATION_NAME_STRING, station.getName());
+		params.put(STATION_LOCATION_STRING, station.getLocation());
+		namedParameterJdbcTemplate.update(STATIONS_INSERT_QUERY, params);
 	}
 
 	@Override
 	public void updateStation(Station station) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", station.getId());
-		params.put("name", station.getName());
-		params.put("location", station.getLocation());
-		String sql = "UPDATE stations set name = :name, location = :location where id = :id";
-		namedParameterJdbcTemplate.update(sql, params);
+		params.put(STATION_ID_STRING, station.getId());
+		params.put(STATION_NAME_STRING, station.getName());
+		params.put(STATION_LOCATION_STRING, station.getLocation());
+		namedParameterJdbcTemplate.update(STATIONS_UPDATE_BY_ID_QUERY, params);
 	}
 
 	@Override
 	public void deleteStation(long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", id);
-		String sql = "delete from stations where id = :id";
-		namedParameterJdbcTemplate.update(sql, params);
+		params.put(STATION_ID_STRING, id);
+		namedParameterJdbcTemplate.update(STATIONS_DELETE_BY_ID_QUERY, params);
 	}
 
 	/**
@@ -89,9 +100,9 @@ public class StationDaoImp implements StationDao {
 	private static final class StationMapper implements RowMapper<Station> {
 		public Station mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Station station = new Station();
-			station.setId(rs.getInt("id"));
-			station.setName(rs.getString("name"));
-			station.setLocation(rs.getString("location"));
+			station.setId(rs.getInt(STATION_ID_STRING));
+			station.setName(rs.getString(STATION_NAME_STRING));
+			station.setLocation(rs.getString(STATION_LOCATION_STRING));
 			return station;
 		}
 	}
