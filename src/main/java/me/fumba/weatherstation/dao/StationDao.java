@@ -15,4 +15,6 @@ public interface StationDao {
 	void deleteStation(long id);
 
 	List<Station> findAllStations();
+
+	boolean isStationExist(Station station);
 }

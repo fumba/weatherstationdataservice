@@ -49,8 +49,12 @@ public class StationDaoImp implements StationDao {
 
 	@Override
 	public void saveStation(Station station) {
-		// TODO Auto-generated method stub
-
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", station.getId());
+		params.put("name", station.getName());
+		params.put("location", station.getLocation());
+		String sql = "INSERT into stations (id, name, location) values (:id, :name, :location)";
+		namedParameterJdbcTemplate.update(sql, params);
 	}
 
 	@Override
@@ -63,6 +67,17 @@ public class StationDaoImp implements StationDao {
 	public void deleteStation(long id) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * Checks to see if a station with the specified id exists
+	 */
+	@Override
+	public boolean isStationExist(Station station) {
+		if (this.findById(station.getId()) != null) {
+			return true;
+		}
+		return false;
 	}
 
 	private static final class StationMapper implements RowMapper<Station> {

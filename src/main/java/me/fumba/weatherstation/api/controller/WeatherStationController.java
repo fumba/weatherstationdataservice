@@ -6,13 +6,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import me.fumba.weatherstation.dao.StationDao;
 import me.fumba.weatherstation.model.Station;
@@ -56,4 +59,19 @@ public class WeatherStationController {
 		return new ResponseEntity<List<Station>>(stations, HttpStatus.OK);
 	}
 
+	/**
+	 * Creates new station
+	 */
+	@RequestMapping(value = "/station", method = RequestMethod.POST)
+	public ResponseEntity<Void> createStation(@RequestBody Station station, UriComponentsBuilder ucBuilder) {
+		logger.info("Creating Station " + station.getId());
+		if (stationDao.isStationExist(station)) {
+			System.out.println("A Station with id " + station.getId() + " already exist");
+			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+		}
+		stationDao.saveStation(station);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(station.getId()).toUri());
+		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+	}
 }
