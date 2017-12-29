@@ -59,8 +59,12 @@ public class StationDaoImp implements StationDao {
 
 	@Override
 	public void updateStation(Station station) {
-		// TODO Auto-generated method stub
-
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", station.getId());
+		params.put("name", station.getName());
+		params.put("location", station.getLocation());
+		String sql = "UPDATE stations set name = :name, location = :location where id = :id";
+		namedParameterJdbcTemplate.update(sql, params);
 	}
 
 	@Override

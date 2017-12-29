@@ -74,4 +74,43 @@ public class WeatherStationController {
 		headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(station.getId()).toUri());
 		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
+
+	/**
+	 * Update a station
+	 * 
+	 * @param id
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "/station/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Station> updateStation(@PathVariable("id") long id, @RequestBody Station station) {
+		logger.info("Updating Station " + id);
+		Station currentStation = stationDao.findById(id);
+		if (currentStation == null) {
+			logger.info("Station with id " + id + " not found");
+			return new ResponseEntity<Station>(HttpStatus.NOT_FOUND);
+		}
+		currentStation.setName(station.getName());
+		currentStation.setLocation(station.getLocation());
+		stationDao.updateStation(currentStation);
+		return new ResponseEntity<Station>(currentStation, HttpStatus.OK);
+	}
+
+	/**
+	 * Delete a station
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/station/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Station> deleteStation(@PathVariable("id") long id) {
+		logger.info("Fetching & Deleting Station with id " + id);
+		Station user = stationDao.findById(id);
+		if (user == null) {
+			logger.info("Unable to delete. Station with id " + id + " not found");
+			return new ResponseEntity<Station>(HttpStatus.NOT_FOUND);
+		}
+		stationDao.deleteStation(id);
+		return new ResponseEntity<Station>(HttpStatus.NO_CONTENT);
+	}
 }
