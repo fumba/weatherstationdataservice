@@ -1,5 +1,9 @@
 # weatherstationdataservice
 
+Locate \target\weather-data-service-0.1.0.jar and start website by executing
+
+$ java -jar weather-data-service-0.1.0.jar &
+
 
 1. NON-EXISTING STATION - $ curl http://localhost:8080/station/5
 
