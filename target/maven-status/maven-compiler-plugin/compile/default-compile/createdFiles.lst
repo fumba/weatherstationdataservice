@@ -1,1 +1,13 @@
+me\fumba\weatherstation\dao\StationDao.class
+me\fumba\weatherstation\api\controller\WeatherStationController.class
+me\fumba\weatherstation\model\Observation$QUALITY_CODE.class
 me\fumba\weatherstation\dao\StationDaoImp$1.class
+me\fumba\weatherstation\model\Sensor.class
+me\fumba\weatherstation\model\Observation.class
+me\fumba\weatherstation\config\db\HSQLDataSource.class
+me\fumba\weatherstation\dao\StationDaoImp.class
+me\fumba\weatherstation\dao\StationDaoImp$SensorMapper.class
+me\fumba\weatherstation\model\Station.class
+me\fumba\weatherstation\WeatherStationApplication.class
+me\fumba\weatherstation\config\SpringRootConfig.class
+me\fumba\weatherstation\dao\StationDaoImp$StationMapper.class
